@@ -91,7 +91,9 @@ for i in np.unique(dataRawbis.index) :
     donneeCourante['month']=donneeCourante.index.month
 
     NbreData=len(donneeCouranteBis) 
-        
+    
+    
+    #INTERPOLATION USING A 4TH ORDER POLYNOMIAL    
     def func(x, a, b, c, d,e):
         return a*x**4+b *x**3+c*x**2+d*x+e
 
@@ -103,11 +105,11 @@ for i in np.unique(dataRawbis.index) :
     popt, pcov = curve_fit(func, X.month, Y)
 
     
-    # a le meme index que x ie donneeCouranteBis
+    # have the same index as x ie donneeCouranteBis
     diffCourante=Y-func(X.month, *popt)
     
     
-    # calcul r2 of fit
+    # calculation of r2 of fit
     residuals = Y-func(X.month, *popt)
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((Y-np.mean(Y))**2)
@@ -115,15 +117,13 @@ for i in np.unique(dataRawbis.index) :
     
     STDest=np.sqrt(ss_res/len(X))
     
-    
-    
-    
+     
     
     meandiffCourante=np.nanmean(abs(diffCourante))
     
     donneeCouranteBis['diff']=donneeCouranteBis.ETP.values-func(X.month, *popt)
 
-# calcul de l'erreur pour chaque mois de l'anne based on diffCourante + index de X
+# calculation ofthe error for each month of the year based on diffCourante + index of X
     
     monthlyDiff=donneeCouranteBis['diff'].groupby(donneeCouranteBis.month).mean()
     NbreMois=donneeCouranteBis['diff'].groupby(donneeCouranteBis.month).count()
@@ -133,14 +133,14 @@ for i in np.unique(dataRawbis.index) :
     MonthDiff[:] = np.nan
     
     
-    #decalage dans index de 1
+    # shift of the index by 1
     for mois in monthlyDiff.index.values-1:
         MonthDiff[mois]=monthlyDiff[mois+1]
         
   
     equation =str(round(popt[0],2))+'*x^4+'+str(round(popt[1],2))+'*x^3+'+str(round(popt[2]))+'*x^2+'+str(round(popt[3]))+'+*x+'+str(round(popt[4]))
   
-#    plot pour evolution sur ensemble de la fenetre temporelle ou il ya a des donnes    
+#    plot to see timeserie when we have available data
     plt.figure()
     plt.plot(donneeCourante.ETP, 'b*', label='Raw Data',ms=10)
     plt.plot(donneeCourante.index, func(donneeCourante.month, *popt), 'rs', label='Interpolated data \nEquation ',ms=10)
@@ -167,9 +167,9 @@ for i in np.unique(dataRawbis.index) :
                     textcoords='offset points',fontsize=14,zorder=10)
     
     
-# estimation de l'erreur du fit
-# une maniere est d'estimer l'erreur moyenne pour tout les mois ou il a des donnes entre le polynome et les vraies valeurs
-# cela donne l'erreur moyenne sur un mois, qu'on mutliplie ensuite par 12, car pour certaines stations, certains mois de l'annee n'ont pas de donnees du tout        
+# estimatiom of fit error
+# one way is to estimate the mean error for each month when there are data, comparing the polynomial and real (measured) values
+# this give us the mean error over a month, which is then mutlitplied by 12 because for some stations, some month of the year do not have data at all
     
     donneeCouranteInterp=func(np.arange(1,13), *popt)
 
