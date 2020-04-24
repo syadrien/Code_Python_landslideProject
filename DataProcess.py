@@ -4,13 +4,15 @@ Created on Mon Oct 23 16:04:08 2017
 
 @author: ASY
 
-But : Compilation des données physico-chimique SOUTERRRAINE dispo sur l'ile de la Réunion
-      + classification des stations en fonction du type superficial/basal aquifer
-Entrée : Fichier RecapDonne.csv qui contient plein d'info (certaines redondante, certaines mesures d'un parametre ont ete prise a des instants differents)
-Sortie : Un fichier csv "propre" comprenant les info sur chacune des stations + les moyennes de differents parametre mesuré
-         + un second fichier csv compilant les memes info mais uniquement pour les basal aquifer
+Goal: Compilation of available underground physico-chemical data on Reunion Island.
+      + classification of stations according to the type of surface/basal aquifer
+Input : File RecapDonne.csv which contains a lot of info (some redundant, some measurements of a parameter were taken at different times)
+Output : A clean csv file including information on each station + averages of different parameters measured.
+         + a second csv file compiling the same info but only for basal aquifer
          
-Voir article Join(1997) pour le critere de differentiations des aquifer en fonction des rapports [Na]/[Cl]
+See article Join(1997) for the criterion of differentiation of aquifers according to [Na]/[Cl] ratios.
+
+Translated with www.DeepL.com/Translator (free version)
 
 """
 
@@ -33,13 +35,8 @@ dataRaw=pd.read_csv('RecapDonne.csv', sep=';', encoding="ISO-8859-1")
 test=dataRaw.groupby(['CodeNationalBSS']).sum().reset_index()
 
 
-#test=data.groupby('CodeNationalBSS'); 
-#
-#testbis=test.count();
-#nb=testbis.count();
-#A=nb.sort_index(ascending=False).head()
+
 databis=dataRaw.groupby(['CodeNationalBSS']).mean()
-#databis=data.mean();
 
 
 #%%

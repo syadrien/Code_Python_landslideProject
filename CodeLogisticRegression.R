@@ -30,82 +30,7 @@ attTable_5 <- na.omit(attTable_5)
 
 
 
-# ----------> Logistics Regression avec infiltration / RAW DATA
-# DISTANCE FROM SPRINGS NOT INCLUDED
-
-fit <- glm(inLS ~ slope + aspect + curvature + elevation + pluie, data=attTable_6 ,family = poisson)
-summary(fit)
-
-prob <- predict(fit,newdata=subset(attTable_6,select=c("slope","aspect","curvature","elevation","landuse","pluie")), type="response")
-attTable_6$prob=prob
-g <- roc(inLS ~ prob, data = attTable_6)
-plot(g,col='red') 
-print(" Area under curve pour LR model avec infiltration :")
-auc(g)
-
-coef<-fit$coefficients
-write.table(coef, "C:/Users/Reika/Dropbox/data/Landslide/coef.txt", sep=";")
-
-confidence=confint(fit)
-write.table(coef, "C:/Users/Reika/Dropbox/data/Landslide/coefConfidence.txt", sep=";")
-
-
-# ----------> Logistics Regression avec infiltration / but not rainfal
-
-fit <- glm(inLS ~  slope + aspect + DeepInf + runoff , data=attTable_6 ,family = poisson)
-summary(fit)
-
-prob <- predict(fit,newdata=subset(attTable_6,select=c("slope","aspect","DeepInf","runoff")), type="response")
-attTable_6$prob=prob
-g <- roc(inLS ~ prob, data = attTable_6)
-plot(g,col='red') 
-print(" Area under curve pour LR model avec infiltration :")
-auc(g)
-
-coef<-fit$coefficients
-write.table(coef, "C:/Users/Reika/Dropbox/data/Landslide/coef.txt", sep=";")
-
-################################### without shallowInf / DeepInf/ Runoff
-
-
-fitBis <- glm(inLS ~ pluie + landuse_cat + dist_water + DeepInf, data=attTable_6 ,family = poisson)
-summary(fitBis)
-
-prob <- predict(fitBis,newdata=subset(attTable_6,select=c("pluie","landuse_cat","dist_water","DeepInf")), type="response")
-attTable_6$prob=prob
-g <- roc(inLS ~ prob, data = attTable_6)
-plot(g,col='red') 
-print(" Area under curve pour LR model sans infiltration :")
-auc(g)
-coef<-fitBis$coefficients
-write.table(coef, "C:/Users/Reika/Dropbox/data/Landslide/coef.txt", sep=";")
-
-################################### with shallowInf / DeepInf/ Runoff only
-
-
-fitBISSS <- glm(inLS ~ slope + landuse_cat, data=attTable_6 ,family = poisson)
-summary(fitBISSS)
-
-prob <- predict(fitBISSS,newdata=subset(attTable_6,select=c("slope","landuse_cat")), type="response")
-attTable_6$prob=prob
-g <- roc(inLS ~ prob, data = attTable_6)
-plot(g,col='red') 
-print(" Area under curve pour LR model avec infiltration :")
-auc(g)
-
-
-
-
-
-
-
-
-
-
-
-
-
-################# TEST 7/31/2019    avec tout les parametres
+################# TEST 7/31/2019    all parameters included
 
 attTable_6 = read.csv("C:/Users/Reika/Dropbox/data/Landslide/Sample_point_8_1.csv", header = TRUE,sep=";")
 
@@ -133,12 +58,10 @@ attTable_6[attTable_6 == "NULL"] = NA
 attTable_6 <- na.omit(attTable_6)
 
 
-
-
 summary(attTable_6)
 
 
-#test mutlicolinearite
+#test mutlicolinearity
 
 x<-attTable_6[,-1]
 y<-attTable_6[,1]
@@ -165,23 +88,7 @@ write.table(coef, "C:/Users/Reika/Dropbox/data/Landslide/coef.txt", sep=";")
 
 
 
-#autr model pour LR + scaling
-fit <- glm(INLS ~  slopeNum + aspectNum + curvNum + elevNum  + pluiePt + LANDUSE4 + LANDUSE5 +  LANDUSE1 +  LANDUSE2 +  LANDUSE3 +  LANDUSE6, data=attTable_6 ,family = poisson)
-summary(fit)
-
-prob <- predict(fit,newdata=subset(attTable_6,select=c("slopeNum","aspectNum","curvNum","pluiePt","elevNum","LANDUSE4","LANDUSE5","LANDUSE1","LANDUSE2","LANDUSE3","LANDUSE6")), type="response")
-attTable_6$prob=prob
-g3 <- roc(INLS ~ prob, data = attTable_6)
-
-fit <- glm(INLS ~  slopeNum + aspectNum + curvNum + elevNum + LANDUSE4 + LANDUSE5 +  LANDUSE1 +  LANDUSE2 +  LANDUSE3 +  LANDUSE6 + ShalInf + runoff + DeepInf, data=attTable_6 ,family = poisson)
-summary(fit)
-
-prob <- predict(fit,newdata=subset(attTable_6,select=c("slopeNum","aspectNum","curvNum","pluiePt","elevNum","LANDUSE4","LANDUSE5","LANDUSE1","LANDUSE2","LANDUSE3","LANDUSE6","ShalInf","runoff","DeepInf")), type="response")
-attTable_6$prob=prob
-g4 <- roc(INLS ~ prob, data = attTable_6)
-
-
-################# TEST 8/7/2019    Model Test Frequency ratio seul
+################# TEST 8/7/2019    Model Test Frequency ratio only
 
 attTableFR = read.csv("C:/Users/Reika/Dropbox/data/Landslide/TabPointFRModelAout19.csv", header = TRUE,sep=",")
 
@@ -205,9 +112,7 @@ legend("bottomright", legend=c("BFR", "FR"),
 
 
   
-    
-  
-  ################# TEST 8/8/2019    FR puis logistic regression
+  ################# TEST 8/8/2019    FR pthe logistic regression
   
   attTable_6 = read.csv("C:/Users/Reika/Dropbox/data/Landslide/TabPointFRLayers.csv", header = TRUE,sep=",")
   
@@ -277,7 +182,7 @@ legend("bottomright", legend=c("BFR", "FR"),
   corr <- pcor(x, method = "pearson")
   
   
-  # compil plot aveclegend
+  # compilation of plot aveclegend
   
   plot(g1,col='red') 
   
@@ -294,37 +199,4 @@ legend("bottomright", legend=c("BFR", "FR"),
          col=c("red", "blue", "green", "green", "black"), lty=c(1,1,1,2,1))
   
   
-  
-  
-  
-  
-  
-  ################# TEST 8/29/2019    Model Test wf seul
-  
-  attTablews = read.csv("C:/Users/Reika/Desktop/LandslideData/RegroupementdataClean/pointWS_8_28.csv", header = TRUE,sep=",")
-  
-  cols.dont.want <- c("POINTWS","XCoord","YCoord","X","Y","OBJECTID")
-  attTablews <- attTablews[, ! names(attTablews) %in% cols.dont.want, drop = F]
-  
-  attTablews[attTablews == "-9999"] = NA
-  attTablews[attTablews == "NULL"] = NA
-  
-  attTablews <- na.omit(attTablews)
-  
-  summary(attTablews)
-  
-  
-  library(pROC)
-  
-  
-  g1 <- roc(inLS ~ WF_map_rainWS, data = attTablews)
-#  plot(g1,col='red') 
-  auc(g1)
-  
-#  g <- roc(inLS ~ FR_allWS, data = attTableFR)
-#  lines(g,col='blue') 
-  
-#  legend("bottomright", legend=c("BFR", "FR"),
-#         col=c("red", "blue"), lty=1:1)
-  
-  auc(g1)
+

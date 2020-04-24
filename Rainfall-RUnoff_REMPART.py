@@ -7,13 +7,14 @@ Created on Mon Apr 29 10:42:53 2019
 
 Rainfall - runoff model for Rempart Discharge
 
-Inspire du modele rainfall-runoff de Cilaos (rainfall_runoff_cilaos.py)
-La majorite du code est le meme a l'exception de : 
+Inspired by the rainfall-runoff model from Cilaos (rainfall_runoff_cilaos.py)
+The majority of the code is the same with the exception of : 
     -import different dataset
-    -calibration de certains paramatere different
-Les parametres ont ete "pre-calibre" avec le modele tableau modelRRrempart.xls 
-Etant donne les donnes tres limitee pour riviere Rempart, on reutilise la calibration de Cilaos
+    -Calibration of some different parameters
+The parameters have been "pre-calibrated" with the table modelRRemart.xls 
+Given the very limited data for Rampart river, we reuse the Cilaos calibration.
 
+Translated with www.DeepL.com/Translator (free version)
 """
 
 
